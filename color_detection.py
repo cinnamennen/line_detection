@@ -29,16 +29,48 @@ while True:
 
     if lines is None:
         continue
-    print("I have " + str(len(lines)) + " lines")
+    # print("I have " + str(len(lines)) + " lines")
     im2 = frame
 
     sorted_things = []
     for line in lines:
         rho, theta = line[0]
-        sorted_things.append((np.rad2deg(theta), rho))
-    print(sorted_things)
-    for line in lines:
-        rho, theta = line[0]
+        sorted_things.append((np.rad2deg(theta) % 180, rho))
+    sorted_things.sort()
+    # print(sorted_things)
+    new_sort = []
+    tmp_list = []
+    # print("I only have to work on")
+    while sorted_things:
+        to_manipulate = sorted_things.pop(0)
+        # print("working with " + str(to_manipulate))
+
+        if not tmp_list:
+            tmp_list.append(to_manipulate)
+            # print("moving on")
+            continue
+        else:
+            # print("I have something to do!")
+            if np.absolute(tmp_list[-1][0] - to_manipulate[0]) < 20:
+                # the angles are similar
+                tmp_list.append(to_manipulate)
+            else:
+                # new set of lines
+                # TODO: process tmp_list
+                new_sort.append(tuple([sum(x) / len(x) for x in zip(*tmp_list)]))
+
+                # exit()
+                tmp_list = [to_manipulate]
+    new_sort.append(tuple([sum(x) / len(x) for x in zip(*tmp_list)]))
+
+    if len(new_sort) >= 2: print(new_sort)
+    # print(sorted_things)
+    # print("=========")
+    continue
+    # exit()
+    for item in new_sort:
+        theta, rho = item
+        theta = np.deg2rad(theta)
         a = np.cos(theta)
         b = np.sin(theta)
         x0 = a * rho
