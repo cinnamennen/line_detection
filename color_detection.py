@@ -35,7 +35,16 @@ while True:
     sorted_things = []
     for line in lines:
         rho, theta = line[0]
-        sorted_things.append((np.rad2deg(theta) % 180, rho))
+        angle = np.rad2deg(theta)
+        # normalizing the angles
+        if angle > 90:
+            angle -= 180
+            rho *= -1
+        if angle < -90:
+            angle += 180
+            rho *= -1
+
+        sorted_things.append((angle, rho))
     sorted_things.sort()
     # print(sorted_things)
     new_sort = []
@@ -66,7 +75,7 @@ while True:
     if len(new_sort) >= 2: print(new_sort)
     # print(sorted_things)
     # print("=========")
-    continue
+    # continue
     # exit()
     for item in new_sort:
         theta, rho = item
