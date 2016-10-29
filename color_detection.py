@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-video = cv2.VideoCapture("videos/top_down" + ".m4v")
+video = cv2.VideoCapture("videos/top_down_1" + ".m4v")
 
 cv2.namedWindow('linesH', cv2.WINDOW_NORMAL)
 while True:
@@ -37,10 +37,11 @@ while True:
 
         sorted_things.append((angle, rho))
     sorted_things.sort()
-
+    # print(sorted_things)
     new_sort = []
     tmp_list = []
 
+    # merge "duplicate" lines
     while sorted_things:
         to_manipulate = sorted_things.pop(0)
 
@@ -48,7 +49,7 @@ while True:
             tmp_list.append(to_manipulate)
             continue
         else:
-            if np.absolute(tmp_list[-1][0] - to_manipulate[0]) < 20:
+            if (np.absolute(tmp_list[-1][0] - to_manipulate[0]) < 20) and (np.absolute(tmp_list[-1][1] - to_manipulate[1]) < 30):
                 # the angles are similar
                 tmp_list.append(to_manipulate)
             else:
@@ -58,7 +59,7 @@ while True:
                 tmp_list = [to_manipulate]
     new_sort.append(tuple([sum(x) / len(x) for x in zip(*tmp_list)]))
 
-    # print(new_sort)
+    print(new_sort)
 
     for item in new_sort:
         theta, rho = item
